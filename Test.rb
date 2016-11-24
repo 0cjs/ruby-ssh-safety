@@ -74,10 +74,14 @@ config[:paranoid] = :secure
 
 ############################################################
 
+# For our testing, github.com conveniently offers an SSH server
+# with a key that we know.
+#
+host = 'github.com'
+
 # Now we connect and we should fail because we can't verify the key of
 # the host to which we're connecting (or any host, for that matter).
-
-host = '127.0.0.1'
+#
 begin
     puts("\nConnecting to #{host}...")
     Net::SSH.start(host, 'user', config)
