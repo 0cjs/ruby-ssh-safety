@@ -84,12 +84,16 @@ config[:paranoid] = :secure
 # with a key that we know.
 #
 host = 'github.com'
+hostkey = 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+wronghostkey = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1VJn8gp5A8FZRpemLgUePg/qlsJWqZYxVMtjOvziCh/vKXoCuddWo8Ehsxm++1fwMIf0BIZXQpH1EymH8joMOImfDm8UQ5OsTnP5T5+9NF7dH6BveK8VIZTJcRGX80CzfpEESmC0I3fbB1JoMVwEvznQnSveIcfvyhhoGUIO1L3L06s2LBRQRuGpM3razYW0W0z9qXegEivxQpvjG5OLAkaoVtdZ5zMlkGbKf+IWXL9S0pCZWrtOBLG42m5UF5V3vTfi2+Fiq8pMhGlMcpsgJ3bzuf93m+v7Z+bGbsI+Qq2qsT8cm7j8YH9TaUq9A737yPQeSuGpTovq5c6rqmo/D'
+
+puts("You should see no exceptions.")
 
 # Now we connect and we should fail because we can't verify the key of
 # the host to which we're connecting (or any host, for that matter).
 #
 begin
-    puts("\nConnecting to #{host}...")
+    puts("\nConnecting to #{host} with no known hosts...")
     Net::SSH.start(host, 'user', config)
     fail("ERROR: Should not have successfully authenticated!")
 rescue Net::SSH::HostKeyUnknown => e
@@ -101,5 +105,89 @@ rescue => e
     fail("ERROR: should not have gotten exception #{e.class}:\n  #{e}")
 end
 
-# And this is sorta what we might use in a more serious situation.
-#Net::SSH.start(host, login_name, password: password, keys: [ssh_key_path])
+############################################################
+
+# So now we need to specify the key we know, and assert we can
+# connect.
+#
+# You'd think you could set the `:host_key` configuration parameter,
+# right? Nope, because that's not the host key. That's the host key
+# algorithm.
+#
+# Instead we need to pass in our known host keys via the
+# `:known_hosts` parameter. This must be an object similar to
+# `KnownHosts` (`lib/net/ssh/known_hosts.rb`) in that it responds to a
+# `search_for(host, options={})` method. (This is not entirely clearly
+# a public interface, but looks intended to be so.)
+#
+# Let's do it in a way slightly more generic than really needed, so
+# that people can steal the class.
+#
+class MyKnownHost < Array
+
+    # This should, in theory, return a `Net::SSH::HostKeys` object, or
+    # at least something that responds to both some unspecified
+    # `Array` methods (acting as a list of host keys), `host` and
+    # `add_host_key`.
+    #
+    # Since we run in "sensible" mode (sometimes derogatively referred
+    # to as "ultra-paranoid" mode by those who harbour a secret desire
+    # to be 0wnd) we would never "add" a key because that by
+    # definition is someone we don't know and, and we only want to
+    # connect to those we know. So we do respond to `add_host_key`,
+    # but only with a raspberry.
+    #
+    def search_for(host, options = {})
+        h = host.split(',')[0]
+        h == @host ? self
+                   : raise("Wrong host: #{h.inspect} (from #{host.inspect})")
+    end
+
+    attr_reader :host
+
+    def initialize(host, pubkeys)
+        @host = host
+        super(pubkeys.map { |keyline|
+            type, key = keyline.split(' ', 2)
+            # XXX we just assume it's a supported type, yeah, that's lazybad
+            blob = key.unpack('m*').first
+            Net::SSH::Buffer.new(blob).read_key
+        })
+    end
+
+    def add_host_key(key)
+        fail("BZZZT! You should not be trying to add a key for host #{host}")
+    end
+
+end
+
+config[:known_hosts] = MyKnownHost.new(host, [wronghostkey])
+puts("\nConnecting to known host #{host} with bad host key...")
+begin
+    Net::SSH.start(host, 'git', config) {
+        |s| fail("Connection should have failed") }
+rescue Net::SSH::HostKeyMismatch => e
+    puts("Correctly received HostKeyMismatch.")
+rescue => e
+    fail("ERROR: should not have gotten exception #{e.class}:\n  #{e}")
+end
+
+# XXX We should test that with less paranoid options our
+# `MyKnownHost::add_host_key` properly gives you 'ttthhhhbbbbt!'
+
+config[:known_hosts] = MyKnownHost.new(host, [hostkey])
+puts("\nConnecting to known host #{host} with good host key...")
+Net::SSH.start(host, 'git', config) {
+    |session| puts("Correctly connected to #{session.host}") }
+
+# If we needed to authenticate ourselves, once we've determined a host
+# is ok, we'd need to add our authentication material to the config.
+
+# If we're connecting to a server hungry to be 0wned, use a password.
+#
+config[:password] = 'Own me because this is weak.'
+
+# But if we're sensible, we use a key.
+# XXX Figure out how to do this in a better way than reading a file.
+#
+config[:keys] = "/path/to/ssh/key"
