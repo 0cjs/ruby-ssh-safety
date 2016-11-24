@@ -10,7 +10,7 @@ require 'net/ssh'
 # in the Net::SSH::Configuration class (documented at
 # http://net-ssh.github.io/net-ssh/Net/SSH/Config.html), and this
 # can be loaded via `Net::SSH.configuration_for()`. If the second
-# parmaeter (`use_ssh_config`) is set to its default of `true`,
+# parameter (`use_ssh_config`) is set to its default of `true`,
 # Net::SSH will attempt to read and parse the user's OpenSSH
 # configuration files for settings for the host.
 #
