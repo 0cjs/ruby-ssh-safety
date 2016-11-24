@@ -1,5 +1,11 @@
 #!/usr/bin/env ruby
 
+# WARNING! Everything described in this file was checked against
+# Net::SSH v3.2.0, https://github.com/net-ssh/net-ssh/tree/v3.2.0
+# (commit e279c5e). Other versions may be apropriately different.
+# Some of the things here appear to dig into the Net::SSH internals a
+# little more than may be comfortable for some.
+#
 require 'net/ssh'
 
 # OpenSSH has configuration files such as `~/.ssh/config` that can set
