@@ -1,6 +1,10 @@
 Demonstrate Safe Use of Ruby's Net::SSH
 =======================================
 
+Note: if you're not familiar with the various different
+keys used in SSH, you may want to read or at least scan
+[SSH-AUTH.md](SSH-AUTH.md) first.
+
 Introduction
 ------------
 
