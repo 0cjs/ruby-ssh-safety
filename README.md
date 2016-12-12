@@ -74,7 +74,7 @@ your code that uses a more secure configuration.
 Usage
 -----
 
-Read and understand the code in [Example.rb].
+Read and understand the code in [Example.rb](Example.rb).
 
 You can run the file and it should demonstrate that various conection
 configurations produce the expected results.
