@@ -101,6 +101,18 @@ things progress both on my exploration of the 3.2 API and the release
 process of 4.0.0, I may change to using 4.x sooner or later.
 
 
+Other Information
+-----------------
+
+In the process of having to investigate some (to my mind rather silly)
+questions about alternate methods of host authentication (my brief
+answer: just do it the way the protocol is designed to do it) I did a
+moderately deep dive into the details of the SSH protocol suite. The
+RFCs are not terribly easy to read, so I made a summary with
+references back to appropriate sections of the RFCS; this is in the
+[PROTOCOLS.md] document.
+
+
 License
 -------
 
