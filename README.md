@@ -29,9 +29,10 @@ corresponding private key.
 The problem is, of course, an attacker can send you any public key he
 likes. If you don't have your own copy of the public key you expect,
 or at least its fingerprint, and you accept that public key, you may
-well be accepting an attacker's public key. He can now proxy your
-connection on to the real host, reading and modifying all your data at
-will.
+well be accepting an attacker's public key. There are now several
+avenues of attack available to him, potentially extending as far as
+proxying your connection on to the real host, reading and modifying
+all your data at will.
 
 OpenSSH has a configuration directive called `StrictHostKeyChecking`
 which, when set to `yes` will assert that for the host to which you
