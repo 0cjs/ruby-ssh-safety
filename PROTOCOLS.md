@@ -21,7 +21,7 @@ The layers are, from lowest to highest:
 [SSH-ARCH]:         https://tools.ietf.org/html/rfc4251
 [SSH-USERAUTH]:     https://tools.ietf.org/html/rfc4252
 [SSH-TRANS]:        https://tools.ietf.org/html/rfc4253
-[SSH-CONNECT]:      https://tools.ietf.org/html/rfc4253
+[SSH-CONNECT]:      https://tools.ietf.org/html/rfc4254
 
 
 Protocol Layer Details
