@@ -134,7 +134,11 @@ References
 * SSH Communications Security, [Cryptography for Practitioners][SSH-crypto]
 * Wikipedia, [Public Key Infrastructure][PKI]
 * Wikipedia, [SSH Architecture]
-* [RFC 4251: The Secure Shell (SSH) Protocol Architecture][RFC 4251]
+* [RFC 4250: SSH Protocol Assigned Numbers][RFC 4250]
+* [RFC 4251: SSH Protocol Architecture][RFC 4251]
+* [RFC 4252: SSH Authentication Protocol][RFC 4252]
+* [RFC 4253: SSH Transport Layer Protocol][RFC 4253]
+* [RFC 4254: SSH Connection Protocol][RFC 4254]
 * [`sshd` manpage][sshd]
 * [`ssh_config` manpage][ssh_config]
 * OpenSSH Cookbook, [Host-based User Authentication][hba]
@@ -148,3 +152,11 @@ References
 [sshd]: https://www.freebsd.org/cgi/man.cgi?query=sshd#SSH_KNOWN_HOSTS_FILE_FORMAT
 [ssh_config]: https://www.freebsd.org/cgi/man.cgi?query=ssh_config
 [hba]: https://en.wikibooks.org/wiki/OpenSSH/Cookbook/Host-based_Authentication
+
+[RFC 4250]: https://tools.ietf.org/html/rfc4250
+[RFC 4252]: https://tools.ietf.org/html/rfc4252
+[RFC 4253]: https://tools.ietf.org/html/rfc4253
+[RFC 4254]: https://tools.ietf.org/html/rfc4254
+
+
+
