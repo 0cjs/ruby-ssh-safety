@@ -13,8 +13,6 @@ If you are already familiar with PK schemes, feel free to skip the
 below, but do at least give a quick scan to the [SSH
 Authentication](#ssh-authentication) and subsequent sections below.
 
-[SSH-crypto]: https://www.ssh.com/cryptography/
-
 
 Asymmetric Cryptography
 -----------------------
@@ -52,14 +50,12 @@ of how asymmetric cryptography works, but it's not entirely correct on
 some important details. Thus you must _not_ use this as a guide to
 building or analysing cryptosystems.
 
-[PKI]: https://en.wikipedia.org/wiki/Public_key_infrastructure
-
 
 SSH Authentication
 ------------------
 
 As described in Wikipedia's [SSH Architecture] summary and in more
-detail in [RFC4251], setting up an SSH connection proceeds in several
+detail in [RFC 4251], setting up an SSH connection proceeds in several
 stages and involves two different kinds of authentication.
 
    1. The client authenticates the server, that is, confirms it's
@@ -76,9 +72,6 @@ stages and involves two different kinds of authentication.
    server decides what access to allow and both sides run their
    protocols (terminal sessions, SFTP sessions, agent forwarding,
    etc.) within the SSH transport session.
-
-[SSH Architecture]: https://en.wikipedia.org/wiki/Secure_Shell#Architecture
-[RFC4251]: https://tools.ietf.org/html/rfc4251
 
 
 Different SSH Keypairs
@@ -134,6 +127,22 @@ file under the user's home directory and will request that the client
 prove who it is by proving it has the private key part of that
 keypair.
 
+
+References
+----------
+
+* SSH Communications Security, [Cryptography for Practitioners][SSH-crypto]
+* Wikipedia, [Public Key Infrastructure][PKI]
+* Wikipedia, [SSH Architecture]
+* [RFC 4251: The Secure Shell (SSH) Protocol Architecture][RFC 4251]
+* [`sshd` manpage][sshd]
+* [`ssh_config` manpage][ssh_config]
+* OpenSSH Cookbook, [Host-based User Authentication][hba]
+
+[SSH-crypto]: https://www.ssh.com/cryptography/
+[PKI]: https://en.wikipedia.org/wiki/Public_key_infrastructure
+[SSH Architecture]: https://en.wikipedia.org/wiki/Secure_Shell#Architecture
+[RFC 4251]: https://tools.ietf.org/html/rfc4251
 [README.md]: README.md
 [Example.rb]: Example.rb
 [sshd]: https://www.freebsd.org/cgi/man.cgi?query=sshd#SSH_KNOWN_HOSTS_FILE_FORMAT
