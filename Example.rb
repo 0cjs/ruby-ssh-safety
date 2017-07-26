@@ -124,7 +124,7 @@ end
 # Let's do it in a way slightly more generic than really needed, so
 # that people can steal the class.
 #
-class MyKnownHost < Array
+class MyKnownHost
 
     # This should, in theory, return a `Net::SSH::HostKeys` object, or
     # at least something that responds to both some unspecified
@@ -140,20 +140,20 @@ class MyKnownHost < Array
     #
     def search_for(host, options = {})
         h = host.split(',')[0]
-        h == @host ? self
-                   : raise("Wrong host: #{h.inspect} (from #{host.inspect})")
+        keys = h == @host ? @host_keys : []
+        ::Net::SSH::HostKeys.new(keys, host, self, options)
     end
 
     attr_reader :host
 
     def initialize(host, pubkeys)
         @host = host
-        super(pubkeys.map { |keyline|
+        @host_keys = pubkeys.map { |keyline|
             type, key = keyline.split(' ', 2)
             # XXX we just assume it's a supported type, yeah, that's lazybad
             blob = key.unpack('m*').first
             Net::SSH::Buffer.new(blob).read_key
-        })
+        }
     end
 
     def add_host_key(key)
