@@ -102,7 +102,8 @@ rescue Net::SSH::HostKeyUnknown => e
 rescue Net::SSH::AuthenticationFailed => e
     fail("ERROR: Should not have successfully connected!")
 rescue => e
-    fail("ERROR: should not have gotten exception #{e.class}:\n  #{e}")
+    puts("ERROR: should not have gotten exception #{e.class}:\n  #{e}")
+    raise(e)
 end
 
 ############################################################
@@ -169,7 +170,8 @@ begin
 rescue Net::SSH::HostKeyMismatch => e
     puts("Correctly received HostKeyMismatch.")
 rescue => e
-    fail("ERROR: should not have gotten exception #{e.class}:\n  #{e}")
+    puts("ERROR: should not have gotten exception #{e.class}:\n  #{e}")
+    raise(e)
 end
 
 # XXX We should test that with less paranoid options our
