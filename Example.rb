@@ -151,7 +151,7 @@ class MyKnownHost < Array
         super(pubkeys.map { |keyline|
             type, key = keyline.split(' ', 2)
             # XXX we just assume it's a supported type, yeah, that's lazybad
-            blob = key.unpack('m*').first
+            blob = key.unpack('m0*').first
             Net::SSH::Buffer.new(blob).read_key
         })
     end
