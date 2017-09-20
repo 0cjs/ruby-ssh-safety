@@ -84,8 +84,11 @@ config[:paranoid] = :secure
 # with a key that we know.
 #
 host = 'github.com'
-hostkey = 'ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
-wronghostkey = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1VJn8gp5A8FZRpemLgUePg/qlsJWqZYxVMtjOvziCh/vKXoCuddWo8Ehsxm++1fwMIf0BIZXQpH1EymH8joMOImfDm8UQ5OsTnP5T5+9NF7dH6BveK8VIZTJcRGX80CzfpEESmC0I3fbB1JoMVwEvznQnSveIcfvyhhoGUIO1L3L06s2LBRQRuGpM3razYW0W0z9qXegEivxQpvjG5OLAkaoVtdZ5zMlkGbKf+IWXL9S0pCZWrtOBLG42m5UF5V3vTfi2+Fiq8pMhGlMcpsgJ3bzuf93m+v7Z+bGbsI+Qq2qsT8cm7j8YH9TaUq9A737yPQeSuGpTovq5c6rqmo/D'
+
+# These are "ssh-rsa" keys; it appears that 'Net::SSH' can figure this
+# out automatically (and presumably other types as well).
+hostkey = 'AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=='
+wronghostkey = 'AAAAB3NzaC1yc2EAAAADAQABAAABAQC1VJn8gp5A8FZRpemLgUePg/qlsJWqZYxVMtjOvziCh/vKXoCuddWo8Ehsxm++1fwMIf0BIZXQpH1EymH8joMOImfDm8UQ5OsTnP5T5+9NF7dH6BveK8VIZTJcRGX80CzfpEESmC0I3fbB1JoMVwEvznQnSveIcfvyhhoGUIO1L3L06s2LBRQRuGpM3razYW0W0z9qXegEivxQpvjG5OLAkaoVtdZ5zMlkGbKf+IWXL9S0pCZWrtOBLG42m5UF5V3vTfi2+Fiq8pMhGlMcpsgJ3bzuf93m+v7Z+bGbsI+Qq2qsT8cm7j8YH9TaUq9A737yPQeSuGpTovq5c6rqmo/D'
 
 puts("You should see no exceptions.")
 
@@ -146,12 +149,12 @@ class MyKnownHost < Array
 
     attr_reader :host
 
-    def initialize(host, pubkeys)
+    def initialize(host, base64_pubkeys)
         @host = host
-        super(pubkeys.map { |keyline|
-            type, key = keyline.split(' ', 2)
-            # XXX we just assume it's a supported type, yeah, that's lazybad
-            blob = key.unpack('m0*').first
+        super(base64_pubkeys.map { |base64key|
+            # The type is encoded in the key information; we let
+            # `read_key` determine whether it likes it or not.
+            blob = base64key.unpack('m0*').first
             Net::SSH::Buffer.new(blob).read_key
         })
     end
